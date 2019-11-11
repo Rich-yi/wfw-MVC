@@ -11,6 +11,8 @@ import (
 func main() {
 	//初始化路由
 	routher := gin.New()
+	//数据库处理
+	model.InitRedis()
 	err := model.InitDb()
 	if err != nil {
 		fmt.Println("数据库创建失败", err)
@@ -22,7 +24,7 @@ func main() {
 	//	静态路由
 	routher.Static("/home","view")
 	//请求分配
-	r1 := routher.Group("/api/V1.0")
+	r1 := routher.Group("/api/v1.0")
 	{
 		r1.GET("/areas",controller.GetArea)
 
