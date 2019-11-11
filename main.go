@@ -1,23 +1,26 @@
 package main
 
 import (
-
 	"github.com/gin-gonic/gin"
 
+	"wfw-MVC/model"
 )
 
 func main() {
 	//初始化路由
-	routher:=gin.New()
+	routher := gin.New()
 
 	//请求分配
-	r1:=routher.Group("V1")
-{
-	r1.GET("/cat", func(context *gin.Context) {
-		context.Writer.WriteString("bigcat")
-	})
+	r1 := routher.Group("V1")
+	{
+		r1.GET("/cat", func(context *gin.Context) {
+			context.Writer.WriteString("bigcat")
+		})
 
-	routher.Run(":8001")
-}
 
 	}
+	model.InitModel()
+	model.InitData()
+	model.SearchData()
+	routher.Run(":8001")
+}
