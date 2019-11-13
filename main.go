@@ -13,6 +13,7 @@ func main() {
 	routher := gin.New()
 	//数据库处理
 	model.InitRedis()
+
 	err := model.InitDb()
 	if err != nil {
 		fmt.Println("数据库创建失败", err)
@@ -27,7 +28,11 @@ func main() {
 	r1 := routher.Group("/api/v1.0")
 	{
 		r1.GET("/areas",controller.GetArea)
-
+		r1.GET("/session",controller.GetSession)
+		//传参方法,url传值,form表单传值,ajax传值,路径传值
+		r1.GET("/imagecode/:uuid",controller.GetImageCd)
+		r1.GET("/smscode/:mobile",controller.GetSmscd)
+		r1.POST("/users",controller.PostRet)
 	}
 	routher.Run(":8001")
 }

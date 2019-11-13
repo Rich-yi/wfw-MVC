@@ -8,13 +8,17 @@ import (
 
 	getArea "wfw-MVC/service/getArea/proto/getArea"
 	"wfw-MVC/service/getArea/model"
+	"github.com/micro/go-micro/registry/consul"
 )
 
 func main() {
 	// New Service
+	ServiceConsul:=consul.NewRegistry()
 	service := micro.NewService(
 		micro.Name("go.micro.srv.getArea"),
 		micro.Version("latest"),
+		micro.Registry(ServiceConsul),
+
 	)
 	model.InitDb()
 	model.InitRedis()

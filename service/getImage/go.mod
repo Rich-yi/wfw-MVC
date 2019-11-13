@@ -1,0 +1,1 @@
+module wfw-MVC/service/getImage
