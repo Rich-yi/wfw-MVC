@@ -4,7 +4,7 @@ package go.micro.srv.register;
 
 service Register {
 	rpc SmsCode(Request) returns (Response) {};
-	rpc Register(RegRequest)returns(RegResponse){};
+	rpc MicroRegister(RegRequest) returns (RegResponse){}
 
 }
 message RegRequest{

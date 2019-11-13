@@ -35,7 +35,7 @@ var _ server.Option
 
 type RegisterService interface {
 	SmsCode(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
-	Register(ctx context.Context, in *RegRequest, opts ...client.CallOption) (*RegResponse, error)
+	MicroRegister(ctx context.Context, in *RegRequest, opts ...client.CallOption) (*RegResponse, error)
 }
 
 type registerService struct {
@@ -66,8 +66,8 @@ func (c *registerService) SmsCode(ctx context.Context, in *Request, opts ...clie
 	return out, nil
 }
 
-func (c *registerService) Register(ctx context.Context, in *RegRequest, opts ...client.CallOption) (*RegResponse, error) {
-	req := c.c.NewRequest(c.name, "Register.Register", in)
+func (c *registerService) MicroRegister(ctx context.Context, in *RegRequest, opts ...client.CallOption) (*RegResponse, error) {
+	req := c.c.NewRequest(c.name, "Register.MicroRegister", in)
 	out := new(RegResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -80,13 +80,13 @@ func (c *registerService) Register(ctx context.Context, in *RegRequest, opts ...
 
 type RegisterHandler interface {
 	SmsCode(context.Context, *Request, *Response) error
-	Register(context.Context, *RegRequest, *RegResponse) error
+	MicroRegister(context.Context, *RegRequest, *RegResponse) error
 }
 
 func RegisterRegisterHandler(s server.Server, hdlr RegisterHandler, opts ...server.HandlerOption) error {
 	type register interface {
 		SmsCode(ctx context.Context, in *Request, out *Response) error
-		Register(ctx context.Context, in *RegRequest, out *RegResponse) error
+		MicroRegister(ctx context.Context, in *RegRequest, out *RegResponse) error
 	}
 	type Register struct {
 		register
@@ -103,6 +103,6 @@ func (h *registerHandler) SmsCode(ctx context.Context, in *Request, out *Respons
 	return h.RegisterHandler.SmsCode(ctx, in, out)
 }
 
-func (h *registerHandler) Register(ctx context.Context, in *RegRequest, out *RegResponse) error {
-	return h.RegisterHandler.Register(ctx, in, out)
+func (h *registerHandler) MicroRegister(ctx context.Context, in *RegRequest, out *RegResponse) error {
+	return h.RegisterHandler.MicroRegister(ctx, in, out)
 }

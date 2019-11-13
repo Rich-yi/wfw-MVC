@@ -26,7 +26,7 @@ func main() {
 	model.InitRedis()
 	model.InitDb()
 	// Register Handler
-	register.RegisterRegisterHandler(service.Server(), new(handler.Register))
+	register.RegisterRegisterHandler(service.Server(),new(handler.Register))
 
 	// Run service
 	if err := service.Run(); err != nil {

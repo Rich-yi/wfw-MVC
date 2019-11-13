@@ -81,7 +81,8 @@ func (e *Register) SmsCode(ctx context.Context, req *register.Request, rsp *regi
 }
 
 //注册
-func (e *Register) Register(ctx *context.Context, req *register.RegRequest, rsp *register.RegResponse) error {
+//func(e *Register)MicroRegister(ctx context.Context,req *register.RegRequest,rsp *register.RegResponse) error{}
+func (e *Register)MicroRegister(ctx context.Context, req *register.RegRequest, rsp *register.RegResponse) error {
 	//实现具体的业务  把数据存储到mysql中  校验短信验证码是否正确
 	//校验短信验证码会否正确
 	smsCode, err := model.GetSmsCode(req.Mobile)
