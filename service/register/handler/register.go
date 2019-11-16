@@ -99,7 +99,7 @@ func (e *Register)MicroRegister(ctx context.Context, req *register.RegRequest, r
 	//存储用户数据到MySQL上
 	//给密码加密
 	pwdByte := sha256.Sum256([]byte(req.Password))
-	pwd_hash := string(pwdByte[:])
+	pwd_hash := fmt.Sprintf("%x",pwdByte[:])
 	err = model.SaveUser(req.Mobile, pwd_hash)
 	if err != nil {
 		rsp.Errno = utils.RECODE_DBERR
@@ -108,6 +108,24 @@ func (e *Register)MicroRegister(ctx context.Context, req *register.RegRequest, r
 	}
 	rsp.Errno = utils.RECODE_OK
 	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	return nil
+
+}
+
+func (e *Register)Login(ctx context.Context, req *register.RegRequest,rsp *register.RegResponse) error{
+	//查询输入手机号和密码是否正确  mysql
+	//给密码加密
+	pwdHash:=sha256.Sum256([]byte(req.Password))
+	password_hash:=fmt.Sprintf("%x",pwdHash)
+	user,err:=model.CheckUser(req.Mobile,password_hash)
+	if err != nil {
+		rsp.Errno=utils.RECODE_LOGINERR
+		rsp.Errmsg=utils.RecodeText(utils.RECODE_LOGINERR)
+		return err
+	}
+	rsp.Errno=utils.RECODE_OK
+	rsp.Errmsg=utils.RecodeText(utils.RECODE_OK)
+	rsp.Name=user.Name
 	return nil
 
 }

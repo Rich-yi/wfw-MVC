@@ -1,6 +1,9 @@
 package model
 
-import "github.com/garyburd/redigo/redis"
+import (
+	"github.com/garyburd/redigo/redis"
+	"fmt"
+)
 
 var RedisPool redis.Pool
 //连接池
@@ -32,13 +35,16 @@ func SaveSmsCode(phone, vcode string) error {
 	_, err := conn.Do("setex", phone+"_code", 60*5, vcode)
 	return err
 }
+
 //存储用户名和密码
 func SaveUser(mobile ,password_hash string ) error {
 	//链接数据库 gorm插入数据
 	var user User
 	user.Mobile=mobile
 	user.Name=mobile
+	fmt.Println("password+++++++++++",password_hash)
 	user.Password_hash=password_hash
+	fmt.Println("password===========================",password_hash)
 	return GlobalDB.Create(&user).Error
 }
 //校验短信验证码是否正确
@@ -46,4 +52,11 @@ func GetSmsCode(phone string)(string ,error){
 	//获取redis链接
 	conn:=RedisPool.Get()
 	return redis.String(conn.Do("get",phone+"_code"))
+}
+//校验登录信息
+func CheckUser(mobile,password_hash string)(User, error){
+	//链接数据库
+	var user User
+	 err:=GlobalDB.Where("mobile=?",mobile).Where("password_hash=?",password_hash).Find(&user).Error
+	return user,err
 }

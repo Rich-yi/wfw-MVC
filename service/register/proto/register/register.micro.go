@@ -36,6 +36,7 @@ var _ server.Option
 type RegisterService interface {
 	SmsCode(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	MicroRegister(ctx context.Context, in *RegRequest, opts ...client.CallOption) (*RegResponse, error)
+	Login(ctx context.Context, in *RegRequest, opts ...client.CallOption) (*RegResponse, error)
 }
 
 type registerService struct {
@@ -76,17 +77,29 @@ func (c *registerService) MicroRegister(ctx context.Context, in *RegRequest, opt
 	return out, nil
 }
 
+func (c *registerService) Login(ctx context.Context, in *RegRequest, opts ...client.CallOption) (*RegResponse, error) {
+	req := c.c.NewRequest(c.name, "Register.Login", in)
+	out := new(RegResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Register service
 
 type RegisterHandler interface {
 	SmsCode(context.Context, *Request, *Response) error
 	MicroRegister(context.Context, *RegRequest, *RegResponse) error
+	Login(context.Context, *RegRequest, *RegResponse) error
 }
 
 func RegisterRegisterHandler(s server.Server, hdlr RegisterHandler, opts ...server.HandlerOption) error {
 	type register interface {
 		SmsCode(ctx context.Context, in *Request, out *Response) error
 		MicroRegister(ctx context.Context, in *RegRequest, out *RegResponse) error
+		Login(ctx context.Context, in *RegRequest, out *RegResponse) error
 	}
 	type Register struct {
 		register
@@ -105,4 +118,8 @@ func (h *registerHandler) SmsCode(ctx context.Context, in *Request, out *Respons
 
 func (h *registerHandler) MicroRegister(ctx context.Context, in *RegRequest, out *RegResponse) error {
 	return h.RegisterHandler.MicroRegister(ctx, in, out)
+}
+
+func (h *registerHandler) Login(ctx context.Context, in *RegRequest, out *RegResponse) error {
+	return h.RegisterHandler.Login(ctx, in, out)
 }

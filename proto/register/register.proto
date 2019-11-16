@@ -4,8 +4,8 @@ package go.micro.srv.register;
 
 service Register {
 	rpc SmsCode(Request) returns (Response) {};
-	rpc Register(RegRequest)returns(RegResponse){};
-
+	rpc MicroRegister(RegRequest) returns (RegResponse){};
+	rpc Login(RegRequest)returns(RegResponse){};
 }
 message RegRequest{
 	string mobile =1;
@@ -16,6 +16,7 @@ message RegRequest{
 message RegResponse{
 	string errno =1;
 	string errmsg =2;
+	string name =3;
 }
 
 message Request {
